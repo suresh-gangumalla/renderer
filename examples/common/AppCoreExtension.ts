@@ -55,5 +55,16 @@ export default class AppCoreExtension extends CoreExtension {
         '/fonts/Ubuntu-Regular.ssdf.json',
       ),
     );
+
+    stage.fontManager.addFontFace(
+      new SdfTrFontFace(
+        'Black',
+        {},
+        'msdf',
+        stage,
+        '/fonts/Inter-Black.png',
+        '/fonts/Inter-Black.json',
+      ),
+    );
   }
 }

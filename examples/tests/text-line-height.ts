@@ -45,6 +45,58 @@ export default async function test(settings: ExampleSettings) {
     ...generateLineHeightTest(renderer, 'canvas'),
   ]);
 
+  const { testRoot } = settings;
+  const mountAt = 0;
+  const fontSizeToBe = 128;
+  const lineHeightToBe = 10;
+
+  const wankaTextNodeProps = {
+    x: 200,
+    y: 650,
+    mount: mountAt,
+    color: 0x000000ff,
+    text: 'Wonka',
+    fontFamily: 'Black',
+    fontSize: fontSizeToBe,
+    lineHeight: lineHeightToBe,
+  } satisfies Partial<ITextNodeWritableProps>;
+
+  const wankaTextNode = renderer.createTextNode({
+    ...wankaTextNodeProps,
+    parent: testRoot,
+  });
+
+  wankaTextNode.on('loaded', (el, { type, dimensions }) => {
+    console.log(
+      `Wanka Text @loaded, type-> ${type},  rendered height-> ${dimensions.height} & width-> ${dimensions.width}`,
+    );
+  });
+
+  const migrationTextNode = renderer.createTextNode({
+    ...wankaTextNodeProps,
+    text: 'Migration',
+    x: 800,
+    parent: testRoot,
+  });
+
+  migrationTextNode.on('loaded', (el, { type, dimensions }) => {
+    console.log(
+      `Migration Text @loaded, type-> ${type},  rendered height-> ${dimensions.height} & width-> ${dimensions.width}`,
+    );
+  });
+
+  // To Verify Actual text Rendered height is equal to what it returned in @loaded event
+  const rectEle = renderer.createNode({
+    x: 190,
+    y: 650,
+    mount: mountAt,
+    width: 10,
+    height: lineHeightToBe,
+    color: 0xff0000ff,
+    parent: testRoot,
+    alpha: 0, // make this 1 to view
+  });
+
   return pageContainer;
 }
 
