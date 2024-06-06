@@ -37,9 +37,9 @@ export default async function test({ renderer, testRoot }: ExampleSettings) {
    */
 
   /**
-   * Usage: Use Up/Down arrows to switch the alpha between two rows
-   *        Use 'a' key to change the row1 child element height to 200
-   *        Use 'b' key to change the row1 child element height back to original 400
+   * Usage: Press Up/Down arrows to switch the alpha between two rows
+   *        Press 'a' key to change the row1 child element height to 200
+   *        Press 'b' key to change the row1 child element height back to original 400
    * */
 
   const colorOfRow = 0x00000000;
@@ -47,10 +47,9 @@ export default async function test({ renderer, testRoot }: ExampleSettings) {
   const heightOfChildElement = 400;
 
   const row1 = renderer.createNode({
-    width: 1000,
+    width: 600,
     height: 500,
-    x: 960,
-    mountX: 0.5,
+    x: 100,
     alpha: 0.2,
     color: colorOfRow,
     parent: testRoot,
@@ -77,10 +76,9 @@ export default async function test({ renderer, testRoot }: ExampleSettings) {
   });
 
   const row2 = renderer.createNode({
-    width: 1000,
+    width: 600,
     height: 500,
-    x: 960,
-    mountX: 0.5,
+    x: 100,
     alpha: 0.2,
     y: 600,
     color: colorOfRow,
@@ -130,6 +128,34 @@ export default async function test({ renderer, testRoot }: ExampleSettings) {
       // Setting height back to original
       row1Child.height = heightOfChildElement;
     }
+  });
+
+  // Usage information
+  renderer.createTextNode({
+    x: 900,
+    y: 200,
+    text: 'Use Up/Down arrows to switch between two rows',
+    fontSize: 35,
+    parent: testRoot,
+  });
+
+  renderer.createTextNode({
+    x: 900,
+    y: 300,
+    text: "Press key 'a' to change the row1 child element height to 200",
+    fontSize: 35,
+    parent: testRoot,
+  });
+
+  renderer.createTextNode({
+    width: 950,
+    lineHeight: 50,
+    contain: 'width',
+    x: 900,
+    y: 400,
+    text: "Press key 'b' to change the row1 child element height back to original 400",
+    fontSize: 35,
+    parent: testRoot,
   });
 
   // set row1 alpha to 1
