@@ -32,8 +32,10 @@ export default async function test({ renderer, testRoot }: ExampleSettings) {
    */
 
   /**
-   *  Observations: if we decrease the height of the child-element then alpha effect is
-   *  working as expected on row element.
+   *  Observations:
+   *    1) if we change  the height/width of any child-element then alpha effect is
+   *        working as expected on row element.
+   *    2)
    */
 
   /**
@@ -44,22 +46,77 @@ export default async function test({ renderer, testRoot }: ExampleSettings) {
 
   const colorOfRow = 0x00000000;
 
-  const heightOfChildElement = 400;
+  const heightOfChildElement = 200;
+  const widthOfChildElement = 200;
 
-  const row1 = renderer.createNode({
-    width: 600,
-    height: 500,
+  const container1 = renderer.createNode({
+    width: 800,
     x: 100,
+    y: 20,
+    height: 600,
+    color: 0xa9a9a9ff,
+    parent: testRoot,
+    scale: 1.05,
+  });
+
+  const c1Row1 = renderer.createNode({
+    width: 960,
+    height: 300,
+    alpha: 1,
+    color: colorOfRow,
+    parent: container1,
+  });
+
+  const c1Row1Child = renderer.createNode({
+    x: 400,
+    y: 20,
+    mountX: 0.5,
+    width: widthOfChildElement,
+    height: heightOfChildElement,
+    color: 0xff0000ff,
+    parent: c1Row1,
+  });
+
+  const c1Row2 = renderer.createNode({
+    width: 960,
+    height: 300,
+    y: 300,
     alpha: 0.2,
     color: colorOfRow,
+    parent: container1,
+  });
+
+  const c1Row2Child = renderer.createNode({
+    x: 400,
+    y: 20,
+    mountX: 0.5,
+    width: widthOfChildElement,
+    height: heightOfChildElement,
+    color: 0x00ff00ff,
+    parent: c1Row2,
+  });
+
+  const container2 = renderer.createNode({
+    width: 800,
+    height: 600,
+    y: 20,
+    x: 1050,
+    color: 0x696969ff,
     parent: testRoot,
   });
 
-  const row1Child = renderer.createNode({
-    y: 250,
-    x: 100,
-    mountY: 0.5,
-    width: 200,
+  const c2Row1 = renderer.createNode({
+    width: 960,
+    height: 300,
+    color: colorOfRow,
+    parent: container2,
+  });
+
+  const c2Row1Child = renderer.createNode({
+    x: 400,
+    y: 20,
+    mountX: 0.5,
+    width: widthOfChildElement,
     height: heightOfChildElement,
     color: 0xff0000ff,
     shader: renderer.createShader('DynamicShader', {
@@ -72,24 +129,23 @@ export default async function test({ renderer, testRoot }: ExampleSettings) {
         },
       ],
     }),
-    parent: row1,
+    parent: c2Row1,
   });
 
-  const row2 = renderer.createNode({
-    width: 600,
-    height: 500,
-    x: 100,
+  const c2Row2 = renderer.createNode({
+    width: 960,
+    height: 300,
+    y: 300,
     alpha: 0.2,
-    y: 600,
     color: colorOfRow,
-    parent: testRoot,
+    parent: container2,
   });
 
-  const row2Child = renderer.createNode({
-    x: 100,
-    y: 250,
-    mountY: 0.5,
-    width: 200,
+  const c2Row2Child = renderer.createNode({
+    x: 400,
+    y: 20,
+    mountX: 0.5,
+    width: widthOfChildElement,
     height: heightOfChildElement,
     color: 0x00ff00ff,
     shader: renderer.createShader('DynamicShader', {
@@ -102,58 +158,84 @@ export default async function test({ renderer, testRoot }: ExampleSettings) {
         },
       ],
     }),
-    parent: row2,
+    parent: c2Row2,
   });
 
-  let currentFocusIndex = 0;
+  let c1CurrentFocusIndex = 0;
+  let c2CurrentFocusIndex = 0;
+  let activeContainer = 0;
 
   window.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowUp') {
-      if (currentFocusIndex == 1) {
-        row1.alpha = 1;
-        row2.alpha = 0.2;
-        currentFocusIndex ^= 1;
+    if (e.key === 'ArrowLeft') {
+      if (activeContainer == 1) {
+        activeContainer = 0;
+        container1.scale = 1.05;
+        container2.scale = 0.9;
       }
-    }
-    if (e.key === 'ArrowDown') {
-      if (currentFocusIndex == 0) {
-        row2.alpha = 1;
-        row1.alpha = 0.2;
-        currentFocusIndex ^= 1;
+    } else if (e.key === 'ArrowRight') {
+      if (activeContainer == 0) {
+        activeContainer = 1;
+        container1.scale = 0.9;
+        container2.scale = 1.05;
+      }
+    } else if (e.key === 'ArrowUp') {
+      if (activeContainer == 0 && c1CurrentFocusIndex == 1) {
+        c1Row1.alpha = 1;
+        c1Row2.alpha = 0.2;
+        c1CurrentFocusIndex ^= 1;
+      } else if (activeContainer == 1 && c2CurrentFocusIndex == 1) {
+        c2Row1.alpha = 1;
+        c2Row2.alpha = 0.2;
+        c2CurrentFocusIndex ^= 1;
+      }
+    } else if (e.key === 'ArrowDown') {
+      if (activeContainer == 0 && c1CurrentFocusIndex == 0) {
+        c1Row2.alpha = 1;
+        c1Row1.alpha = 0.2;
+        c1CurrentFocusIndex ^= 1;
+      } else if (activeContainer == 1 && c2CurrentFocusIndex == 0) {
+        c2Row2.alpha = 1;
+        c2Row1.alpha = 0.2;
+        c2CurrentFocusIndex ^= 1;
       }
     } else if (e.key == 'a') {
       // To verify alpha effect is working as expected when row1 child-element height got decreased
-      row1Child.height = 200;
+      c2Row1Child.height = 150;
     } else if (e.key == 'b') {
       // Setting height back to original
-      row1Child.height = heightOfChildElement;
+      c2Row1Child.height = heightOfChildElement;
     }
   });
 
+  const noteX = 300;
   // Usage information
   renderer.createTextNode({
-    x: 900,
-    y: 200,
+    x: noteX,
+    y: 700,
+    text: 'Use Left/Right arrows to switch between two container',
+    fontSize: 35,
+    parent: testRoot,
+  });
+  renderer.createTextNode({
+    x: noteX,
+    y: 750,
     text: 'Use Up/Down arrows to switch between two rows',
     fontSize: 35,
     parent: testRoot,
   });
 
   renderer.createTextNode({
-    x: 900,
-    y: 300,
-    text: "Press key 'a' to change the row1 child element height to 200",
+    x: noteX,
+    y: 800,
+    text: "Press key 'a' to change the container 2 row1 child element height to 200",
     fontSize: 35,
     parent: testRoot,
   });
 
   renderer.createTextNode({
-    width: 950,
-    lineHeight: 50,
-    contain: 'width',
-    x: 900,
-    y: 400,
-    text: "Press key 'b' to change the row1 child element height back to original 400",
+    x: noteX,
+    y: 850,
+    text: "Press key 'b' to change the container 2 row1 child element height back to original 400",
     fontSize: 35,
     parent: testRoot,
   });
