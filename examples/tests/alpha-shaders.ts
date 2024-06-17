@@ -227,7 +227,7 @@ export default async function test({ renderer, testRoot }: ExampleSettings) {
   renderer.createTextNode({
     x: noteX,
     y: 800,
-    text: "Press key 'a' to change the container 2 row1 child element height to 200",
+    text: "Press key 'a' to change the container 2 row1 child element height to 150",
     fontSize: 35,
     parent: testRoot,
   });
@@ -235,7 +235,7 @@ export default async function test({ renderer, testRoot }: ExampleSettings) {
   renderer.createTextNode({
     x: noteX,
     y: 850,
-    text: "Press key 'b' to change the container 2 row1 child element height back to original 400",
+    text: "Press key 'b' to change the container 2 row1 child element height back to original 200",
     fontSize: 35,
     parent: testRoot,
   });
