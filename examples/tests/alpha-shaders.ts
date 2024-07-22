@@ -164,6 +164,8 @@ export default async function test({ renderer, testRoot }: ExampleSettings) {
   let c2CurrentFocusIndex = 0;
   let activeContainer = 0;
 
+  const alphaOnInActive = 0.2;
+
   window.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft') {
       if (activeContainer == 1) {
@@ -180,21 +182,21 @@ export default async function test({ renderer, testRoot }: ExampleSettings) {
     } else if (e.key === 'ArrowUp') {
       if (activeContainer == 0 && c1CurrentFocusIndex == 1) {
         c1Row1.alpha = 1;
-        c1Row2.alpha = 0.2;
+        c1Row2.alpha = alphaOnInActive;
         c1CurrentFocusIndex ^= 1;
       } else if (activeContainer == 1 && c2CurrentFocusIndex == 1) {
         c2Row1.alpha = 1;
-        c2Row2.alpha = 0.2;
+        c2Row2.alpha = alphaOnInActive;
         c2CurrentFocusIndex ^= 1;
       }
     } else if (e.key === 'ArrowDown') {
       if (activeContainer == 0 && c1CurrentFocusIndex == 0) {
         c1Row2.alpha = 1;
-        c1Row1.alpha = 0.2;
+        c1Row1.alpha = alphaOnInActive;
         c1CurrentFocusIndex ^= 1;
       } else if (activeContainer == 1 && c2CurrentFocusIndex == 0) {
         c2Row2.alpha = 1;
-        c2Row1.alpha = 0.2;
+        c2Row1.alpha = alphaOnInActive;
         c2CurrentFocusIndex ^= 1;
       }
     } else if (e.key == 'a') {
