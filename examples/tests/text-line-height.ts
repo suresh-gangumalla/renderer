@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /*
  * If not stated otherwise in this file or this component's LICENSE file the
  * following copyright and licenses apply:
@@ -40,6 +43,60 @@ export default async function test(settings: ExampleSettings) {
     ...generateLineHeightTest(renderer, 'sdf'),
     ...generateLineHeightTest(renderer, 'canvas'),
   ]);
+
+  const { testRoot } = settings;
+  const mountAt = 0;
+  const fontSizeToBe = 128;
+  const lineHeightToBe = 180;
+
+  const textAttributes = {
+    color: 0x000000ff,
+    fontFamily: 'Ubuntu',
+    fontSize: fontSizeToBe,
+    // lineHeight: lineHeightToBe,
+  } satisfies Partial<ITextNodeProps>;
+
+  const word1 = renderer.createTextNode({
+    x: 200,
+    y: 650,
+    mount: mountAt,
+    text: 'Wonka',
+    ...textAttributes,
+    parent: testRoot,
+  });
+
+  word1.on('loaded', (el, { type, dimensions }) => {
+    console.log(
+      `Wanka Text @loaded, type-> ${type},  rendered height-> ${dimensions.height} & width-> ${dimensions.width}`,
+    );
+  });
+
+  const word2 = renderer.createTextNode({
+    x: 800,
+    y: 650,
+    mount: mountAt,
+    text: 'Migration',
+    ...textAttributes,
+    parent: testRoot,
+  });
+
+  word2.on('loaded', (el, { type, dimensions }) => {
+    console.log(
+      `Migration Text @loaded, type-> ${type},  rendered height-> ${dimensions.height} & width-> ${dimensions.width}`,
+    );
+  });
+
+  // To Verify Actual text Rendered height is equal to what it returned in @loaded event
+  const rectEle = renderer.createNode({
+    x: 190,
+    y: 650,
+    mount: mountAt,
+    width: 10,
+    height: lineHeightToBe,
+    color: 0xff0000ff,
+    parent: testRoot,
+    alpha: 1, // make this 1 to view
+  });
 
   return pageContainer;
 }
